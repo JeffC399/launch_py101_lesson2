@@ -1,72 +1,66 @@
-# Ask the user for the first number
-# Ask the user for the second number
-# Ask the user for an operation to perform
-# Perform the operation on the two numbers
-# Print the result to the terminal
-
 import json
 
-# Open the JSON file for reading
+def prompt(message):
+    print(f"==> {message}")
+
+def invalid_number(number_str):
+    try:
+        float(number_str)
+    except ValueError:
+        return True
+    return False
+
+def messages(message, lang='en'):
+    return MESSAGES[lang][message]
+
 with open('calculator_messages.json', 'r') as file:
     MESSAGES = json.load(file)
 
-# Now 'data' contains the contents of the JSON file as a Python dictionary or list
+print(messages('welcome'))
 
 while True:
-
-    def prompt(message):
-        print(f"=> {message}")
-
-    def invalid_number(number_str):
-        try:
-            int(number_str)
-        except ValueError:
-            return True
-
-        return False
-
-    prompt(MESSAGES['welcome'])
-
-    prompt("What\'s the first number?")
-    number1 = input()
-
-    while invalid_number(number1):
-        prompt(MESSAGES['invalid_number'])
+    while True:
+        prompt(messages('number_prompt_1'))
         number1 = input()
 
-    prompt('What\'s the second number?')
-    number2 = input()
+        if not invalid_number(number1):
+            break
 
-    while invalid_number(number2):
-        prompt(MESSAGES['invalid_number'])
+        prompt(messages('invalid_number'))
+
+    while True:
+        prompt(messages('number_prompt_2'))
         number2 = input()
 
-    prompt( 'What operation would you like to perform?'
-            '\n1) Add 2) Subtract 3) Multipy 4) Divide')
-    operation = input()
+        if not invalid_number(number2):
+            break
 
-    while operation not in ["1", "2", "3", "4"]:
-        prompt("You must choose 1, 2, 3, or 4.")
+        prompt(messages('invalid_number'))
+
+    while True:
+        prompt(messages('operation_prompt'))
         operation = input()
 
+        if operation in ["1", "2", "3", "4"]:
+            break
+
+        prompt(messages('invalid_operation'))
+
     match operation:
-        case '1':
-            output = int(number1) + int(number2)
-        case '2':
-            output = int(number1) - int(number2)
-        case '3':
-            output = int(number1) * int(number2)
-        case '4':
-            output = int(number1) / int(number2)
+        case "1":
+            output = float(number1) + float(number2)
+        case "2":
+            output = float(number1) - float(number2)
+        case "3":
+            output = float(number1) * float(number2)
+        case "4":
+            output = float(number1) / float(number2)
 
-    prompt(f'The result is: {output:,}')
-    prompt("Would you like to run another calculation?")
-    another_calculation = input().upper()
+    output = round(output, 2)  # Round the result to two decimals
 
-    while another_calculation not in ['Y', 'YES', 'N', 'NO']:
-        prompt("That is not a valid response. Try again.")
-        prompt("Would you like to run another calculation?")
-        another_calculation = input().upper()
+    prompt(messages('result').format(output=output))
 
-    if another_calculation in ['N', "NO"]:
+    prompt(messages('another_operation'))
+    answer = input()
+    if answer[0].lower() != 'y':
         break
