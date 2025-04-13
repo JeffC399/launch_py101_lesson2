@@ -1,4 +1,7 @@
-# Mortgage Calculator v2.0
+# Mortgage Calculator v3.0
+# Prohibit the entry of negative interest rate values.
+# Note: v4.0 to allow entry of partial years.
+# Note: v5.0 to carefully refactor the entire project before checking solution.
 
 def prompt(statement):
     return input("=>" + statement)
@@ -11,31 +14,40 @@ def invalid_input(user_input):
         return True
     return False
 
+def is_non_negative(entered_interest_rate):
+    if convert_to_float(entered_interest_rate) < 0:
+        print("Error. The interest rate cannot be less than zero. Try again.")
+        return False
+    return True
+
 def calculate_monthly_payment(entered_loan_amount):
     if monthly_interest_rate > 0:
         return entered_loan_amount * (monthly_interest_rate / (
             1 - (1 + monthly_interest_rate) ** (-loan_duration_in_months)))
     return entered_loan_amount / loan_duration_in_months
 
+def convert_to_float(string_value):
+    return float(string_value)
+
 # Obtain necessary inputs
 while True:
     loan_amount = prompt("Enter the total amount of your loan: ")
     if not invalid_input(loan_amount):
-        loan_amount = float(loan_amount)
+        loan_amount = convert_to_float(loan_amount)
         break
 
 while True:
     annual_percentage_rate = prompt("Enter the annual percentage"
                                     " rate of your loan: ")
-    if not invalid_input(annual_percentage_rate):
-        annual_percentage_rate = float(annual_percentage_rate)
+    if not invalid_input(annual_percentage_rate) and is_non_negative(annual_percentage_rate):
+        annual_percentage_rate = convert_to_float(annual_percentage_rate)
         break
 
 while True:
     loan_duration_in_years = prompt("Enter the total duration of"
                                     " your loan in years: ")
     if not invalid_input(loan_duration_in_years):
-        loan_duration_in_years = float(loan_duration_in_years)
+        loan_duration_in_years = convert_to_float(loan_duration_in_years)
         break
 
 # Make calculations
