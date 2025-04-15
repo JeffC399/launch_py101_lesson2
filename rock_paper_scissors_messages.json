@@ -1,5 +1,11 @@
 {
-    "invalid_choice":           "That's not a valid choice. Type \"rock\", \"paper\", \"scissors\", \"lizard\", or \"spock\".",
-    "another_game":             "Would you like to play again (y or n)?",
-    "another_invalid_choice":   "That's not a valid choice. Type \"y\" or \"n\"."
+    "welcome":                      "Welcome to Rock, Paper, Scissors, Lizard, Spock!\n",
+    "heading_rules":                "\nRULES",
+    "game_rules":                   "In this game, the rules are as follows: \n\nScissors cuts Paper covers Rock crushes Lizard poisons Spock smashes \nScissors decapitates Lizard eats Paper disproves Spock vaporizes Rock \ncrushes Scissors",
+    "ready_to_play":                "Ready? Enter 'y' to start the game!",
+    "wrong_choice_to_start_game":   "Invalid input. You must enter 'y' to start the game!",
+    "invalid_choice":               "That's not a valid choice. Type \"rock\", \"paper\", \"scissors\", \"lizard\", or \"spock\".",
+    "end_of_match":                 "The match is over!\n",
+    "another_game":                 "Would you like to play another match (y or n)?",
+    "another_invalid_choice":       "That's not a valid choice. Type \"y\" or \"n\"."
 }
