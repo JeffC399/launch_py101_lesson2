@@ -1,0 +1,12 @@
+{
+    "invalid_input":                    "Invalid input. Please enter a positive number. Try again.\n",
+    "number_is_negative":               "Error. The number you enter cannot be less than zero. Try again.\n",
+    "enter_loan_amount":                "Enter the total amount of your loan:\n",
+    "enter_annual_rate":                "Enter the annual percentage rate (please use, e.g., 5% and not .05) of your loan or '0' if this is a no-interest loan.\n",
+    "enter_loan_duration":              "Enter the total duration of your loan in years.\n",
+    "monthly_rate":                     "The monthly interest rate is: ",
+    "interest_free":                    "This loan is an interest-free loan. Lucky you.",
+    "duration_in_months":               "The duration of the loan in months is: ",
+    "monthly_payment":                  "Your monthly payment is: ",
+    "another_calculation":              "Would you like to run another calcuation (y or n)?\n"
+}

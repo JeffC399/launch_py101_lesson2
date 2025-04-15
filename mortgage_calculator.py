@@ -1,24 +1,39 @@
-# Mortgage Calculator v3.0
-# Prohibit the entry of negative interest rate values.
-# Note: v4.0 to allow entry of partial years.
-# Note: v5.0 to carefully refactor the entire project before checking solution.
+# Mortgage Calculator v5.0
+# note v1.0
+# note v2.0
+# note v3.0
+# note v4.0
+# note 5.0 implements changes suggested by LSBot
+
+import json
+
+with open('mortgage_calculator_messages.json', 'r') as file:
+    MESSAGES = json.load(file)
 
 def prompt(statement):
-    return input("=>" + statement)
+    return input("===> " + statement)
 
-def invalid_input(user_input):
+def is_invalid_input(user_input):
     try:
         float(user_input)
     except ValueError:
-        print("Invalid input. Try again.")
+        print(MESSAGES['invalid_input'])
         return True
     return False
 
-def is_non_negative(entered_interest_rate):
-    if convert_to_float(entered_interest_rate) < 0:
-        print("Error. The interest rate cannot be less than zero. Try again.")
-        return False
-    return True
+def is_negative(entered_number):
+    if float(entered_number) < 0:
+        print(MESSAGES['number_is_negative'])
+        return True
+    return False
+
+def get_valid_number_input(prompt_message, replace_chars=""):
+    while True:
+        user_input = prompt(prompt_message)
+        for char in replace_chars:
+            user_input = user_input.replace(char,"")
+        if not is_invalid_input(user_input) and not is_negative(user_input):
+            return float(user_input)
 
 def calculate_monthly_payment(entered_loan_amount):
     if monthly_interest_rate > 0:
@@ -26,39 +41,36 @@ def calculate_monthly_payment(entered_loan_amount):
             1 - (1 + monthly_interest_rate) ** (-loan_duration_in_months)))
     return entered_loan_amount / loan_duration_in_months
 
-def convert_to_float(string_value):
-    return float(string_value)
-
+while True:
 # Obtain necessary inputs
-while True:
-    loan_amount = prompt("Enter the total amount of your loan: ")
-    if not invalid_input(loan_amount):
-        loan_amount = convert_to_float(loan_amount)
-        break
-
-while True:
-    annual_percentage_rate = prompt("Enter the annual percentage"
-                                    " rate of your loan: ")
-    if not invalid_input(annual_percentage_rate) and is_non_negative(annual_percentage_rate):
-        annual_percentage_rate = convert_to_float(annual_percentage_rate)
-        break
-
-while True:
-    loan_duration_in_years = prompt("Enter the total duration of"
-                                    " your loan in years: ")
-    if not invalid_input(loan_duration_in_years):
-        loan_duration_in_years = convert_to_float(loan_duration_in_years)
-        break
+    print()
+    loan_amount = (get_valid_number_input
+                              (MESSAGES['enter_loan_amount'], ",$"))
+    annual_percentage_rate = (get_valid_number_input
+                              (MESSAGES['enter_annual_rate'], "%"))
+    loan_duration_in_years = (get_valid_number_input
+                              (MESSAGES['enter_loan_duration']))
 
 # Make calculations
-monthly_interest_rate = (annual_percentage_rate / 100) / 12
-loan_duration_in_months = loan_duration_in_years * 12
-monthly_payment_amount = calculate_monthly_payment(loan_amount)
+    monthly_interest_rate = (annual_percentage_rate / 100) / 12
+    loan_duration_in_months = loan_duration_in_years * 12
+    monthly_payment_amount = calculate_monthly_payment(loan_amount)
 
 # Print results
-if annual_percentage_rate > 0:
-    print(f"The monthly interest rate is {monthly_interest_rate:.4f}%.")
-else:
-    print("This loan is an interest-free loan. Lucky you.")
-print(f"The duration of the loan in months is {loan_duration_in_months:.0f}.")
-print(f"Your monthly payment is ${monthly_payment_amount:,.2f}!")
+    print()
+    print("You requested the monthly payment amount for a loan with a "
+          f"principla amount of ${loan_amount:,.2f}, an annual interest "
+          f"rate of {annual_percentage_rate}%, and a duration of "
+          f"{loan_duration_in_years} years. Here are the details of that "
+          "loan:\n")
+    if annual_percentage_rate > 0:
+        print(MESSAGES['monthly_rate'] + f"{monthly_interest_rate:.4f}%.")
+    else:
+        print(MESSAGES['interest_free'])
+    print(MESSAGES['duration_in_months'] + f"{loan_duration_in_months:.0f}.")
+    print(MESSAGES['monthly_payment'] + f"${monthly_payment_amount:,.2f}!")
+    print()
+
+    user_response = prompt(MESSAGES['another_calculation'])
+    if user_response[0].lower() != 'y':
+        break

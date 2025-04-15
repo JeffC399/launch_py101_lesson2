@@ -1,0 +1,5 @@
+{
+    "invalid_choice":           "That's not a valid choice. Type \"rock\", \"paper\", \"scissors\", \"lizard\", or \"spock\".",
+    "another_game":             "Would you like to play again (y or n)?",
+    "another_invalid_choice":   "That's not a valid choice. Type \"y\" or \"n\"."
+}
