@@ -25,14 +25,16 @@ def prompt(message):
     print(f"==> {message}")
 
 def boundary():
-    print("-----------------------------------------------------------------------")
+    print("------------------------------------------------------------------------")
 
 def display_welcome():
     clear_screen()
     prompt(MESSAGES['welcome'])
     print(MESSAGES['heading_rules'])
     boundary()
-    print(MESSAGES['game_rules'])
+    print(MESSAGES['game_rules1'])
+    print()
+    print(MESSAGES['game_rules2'])
     boundary()
     print()
 
@@ -60,7 +62,7 @@ def calculate_winner_of_round(user_choice, computer_choice):
         (computer_choice == 'lizard' and (user_choice == 'rock' or user_choice == 'scissors'))):
         user_wins += 1
         was_a_tie = False
-        return "You win this round!"
+        return f"{user_name} wins this round!"
     else:
         number_of_ties += 1
         was_a_tie = True
@@ -77,15 +79,15 @@ def display_match_results(user_wins, computer_wins):
 
     print()
     boundary()
+
     if user_wins >= 2:
         print(MESSAGES['end_of_match']) 
-        print(f"Player won the match against Computer by a score of {user_wins} to {computer_wins}!")
-
+        print(f"{user_name} won the match against Computer by a score of {user_wins} to {computer_wins}!")
         matches_won_by_player += 1
     else:
-        print(MESSAGES['end_of_match'] + f"Computer won the match, beating Player by a score of {computer_wins} to {user_wins}. Bummer.")
-
+        print(MESSAGES['end_of_match'] + f"Computer won the match, beating {user_name} by a score of {computer_wins} to {user_wins}. Bummer.")
         matches_won_by_computer += 1
+    
     boundary()
     print()
 
@@ -93,6 +95,7 @@ def display_final_results():
     clear_screen()
     print()
     boundary()
+
     if match_count == 1:
         print(f"Thank you for playing one match (consisting of {game_count} games) of "
               "Rock, Paper, \nScissors, Lizard, Spock!\n")
@@ -111,10 +114,10 @@ def display_final_results():
         if matches_won_by_player == 1:
             print("You won the only match you played against the computer. Ho hum.")
         else:
-            print(f"You thrashed your digital overlord by winning all {matches_won_by_player}"
-                   "\nmatches you played. \nCongrats, but watch your back!")
+            print(f"You thrashed your digital overlord by winning all {matches_won_by_player} "
+                   "matches you played. \nCongrats, but watch your back!")
     elif matches_won_by_player > matches_won_by_computer:
-        print(f"You dominated, crushing the puny little cpu by {matches_won_by_player} to "
+        print(f"You dominated, crushing the puny digital brain by {matches_won_by_player} to "
               f"{matches_won_by_computer}. Go humans!")
     elif matches_won_by_computer > matches_won_by_player:
         print(f"Are you sure you're actually human? Losing by {matches_won_by_computer} to "
@@ -123,11 +126,24 @@ def display_final_results():
     else:
         print(f"The match was tied {matches_won_by_player} to {matches_won_by_computer}. "
               "Very unsatisfying result.")
+    print()
+    print(f"{user_name}, " + MESSAGES['final_message'])
     boundary()
     print()
 
 # Welcome and Rules
 display_welcome()
+
+# Get Player's Name and Confirm His Readiness
+while True:
+    prompt(MESSAGES['enter_name'])
+    user_name = input()
+    print()
+
+    if len(user_name) > 0 and len(user_name) < 20 and user_name[0] != " ":
+        break
+    else:
+        prompt(MESSAGES['user_name_error'])
 
 while True:
     prompt(MESSAGES['ready_to_play'])
@@ -159,13 +175,13 @@ while True:
         computer_choice = random.choice(VALID_CHOICES)
 
         # Calculate and Display Results
-        prompt(f"You chose {user_choice}, computer chose {computer_choice}...")
+        prompt(f"{user_name} chose {user_choice}, computer chose {computer_choice}...")
         prompt(calculate_winner_of_round(user_choice, computer_choice))
 
-        if computer_wins < 2 and user_wins < 2:
-            prompt(f"Currently, the score is User: {user_wins}, Computer: {computer_wins}\n")
+        if computer_wins < 3 and user_wins < 3:
+            prompt(f"Currently, the score is {user_name}: {user_wins}, Computer: {computer_wins}\n")
 
-        if computer_wins >= 2 or user_wins >= 2:
+        if computer_wins >= 3 or user_wins >= 3:
             display_match_results(user_wins, computer_wins)
 
     # Play Again?
