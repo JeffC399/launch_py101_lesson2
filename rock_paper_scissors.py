@@ -7,7 +7,23 @@ import os
 import random
 import json
 
-VALID_CHOICES = ['r', 'p', 's', 'l', 'S']
+VALID_CHOICES = ['r', 'p', 's', 'l', 'o']
+BEST_OUT_OF = 5
+MESSAGES_WHEN_TIED = [
+    "You mean you couldn't outsmart your own computer? Lame.",
+    "What kind of man are you?",
+    "You'd better up your game, mister.",
+    "Well, you coulda been a contender...but you weren't.",
+    "Put down the peace pipe and FOCUS!"
+]
+CONVERT_CHOICE = {
+    'r': 'Rock',
+    'p': 'Paper',
+    's': 'Scissors',
+    'l': 'Lizard',
+    'o': 'Spock'
+}
+
 was_a_tie = True
 no_winner = True
 game_count = 0
@@ -39,6 +55,30 @@ def display_welcome():
     boundary()
     print()
 
+def return_correct_action(u, c):
+    if   (u == 'r' and c == 'p') or (u == 'p' and c == 'r'):
+        return "Paper covers Rock."
+    elif (u == 'r' and c == 's') or (u == 's' and c == 'r'):
+        return "Rock smashes Scissors."
+    elif (u == 'r' and c == 'l') or (u == 'l' and c == 'r'):
+        return "Rock crushes Lizard."
+    elif (u == 'r' and c == 'o') or (u == 'o' and c == 'r'):
+        return "Spock vaporizes Rock."
+    elif (u == 'p' and c == 's') or (u == 's' and c == 'p'):
+        return "Scissors cut Paper."
+    elif (u == 'p' and c == 'l') or (u == 'l' and c == 'p'):
+        return "Lizard eats Paper."
+    elif (u == 'p' and c == 'o') or (u == 'o' and c == 'p'):
+        return "Paper disproves Spock."
+    elif (u == 's' and c == 'l') or (u == 'l' and c == 's'):
+        return "Scissors decapitate Lizard."
+    elif (u == 's' and c == 'o') or (u == 'o' and c == 's'):
+        return "Spock smashes Scissors."
+    elif (u == 'l' and c == 'o') or (u == 'o' and c == 'l'):
+        return "Spock smashes Scissors."
+    else:
+        return "This round was a tie."
+
 def calculate_winner_of_round(user_choice, computer_choice):
     global was_a_tie
     global user_wins
@@ -49,19 +89,20 @@ def calculate_winner_of_round(user_choice, computer_choice):
 
     if user_choice == computer_choice:
         was_a_tie = True
-        return "This round is a tie!"
-    elif((user_choice == 'r' and computer_choice in ['p', 'S']) or
+        tied_message = random.choice(MESSAGES_WHEN_TIED)
+        return tied_message
+    elif((user_choice == 'r' and computer_choice in ['p', 'o']) or
          (user_choice == 'p' and computer_choice in ['s', 'l']) or
-         (user_choice == 's' and computer_choice in ['S', 'r']) or
-         (user_choice == 'S' and computer_choice in ['l', 'p']) or
+         (user_choice == 's' and computer_choice in ['o', 'r']) or
+         (user_choice == 'o' and computer_choice in ['l', 'p']) or
          (user_choice == 'l' and computer_choice in ['r', 's'])):
         computer_wins += 1
         was_a_tie = False
-        return "Computer wins this round."
+        return "Computer won this round."
     else:
         user_wins += 1
         was_a_tie = False
-        return f"{user_name} wins this round!"
+        return f"{user_name} won this round!"
 
 def display_match_results(user_wins, computer_wins):
     global no_winner
@@ -70,12 +111,12 @@ def display_match_results(user_wins, computer_wins):
     global matches_won_by_computer
 
     no_winner = False
-    match_count += 1    
+    match_count += 1
 
     print()
     boundary()
 
-    if user_wins >= 3:
+    if user_wins >= ((BEST_OUT_OF // 2) + 1):
         print(MESSAGES['end_of_match'])
         print(f"{user_name} won the match against Computer by "
               f"a score of {user_wins} to {computer_wins}!")
@@ -152,10 +193,9 @@ while True:
     prompt(MESSAGES['user_name_error'])
 
 while True:
-    prompt(MESSAGES['ready_to_play'])
-    user_answer = input().lower()
+    user_answer = input("Press <enter> to start the game!").strip()
 
-    if user_answer[0] == 'y':
+    if user_answer == "":
         clear_screen()
         break
     prompt(MESSAGES['wrong_choice_to_start_game'])
@@ -167,25 +207,27 @@ while True:
 
     while no_winner:
         # Obtain User Input
-        # prompt(f"Enter your choice: {", ".join(VALID_CHOICES)}")
-        prompt("Enter your choice (r, p, s, l, S): ") # Temporary for Pylint
-        user_choice = input()
+        prompt("Enter your choice: 'r'=Rock, 'p'=Paper, 's'=Scissors, "
+               "'l'=Lizard, 'o'=SpOck.")
+        user_choice = input().strip().lower()
         print()
 
         while user_choice not in VALID_CHOICES:
             prompt(MESSAGES['invalid_choice'])
-            user_choice = input()
+            user_choice = input().strip().lower()
 
         # Obtain Computer Input
         computer_choice = random.choice(VALID_CHOICES)
 
         # Calculate and Display Results
-        prompt(f"{user_name} chose {user_choice}, computer "
-               f"chose {computer_choice}...")
+        prompt(f"{user_name} chose {CONVERT_CHOICE[user_choice]}, computer "
+               f"chose {CONVERT_CHOICE[computer_choice]}...")
+        prompt(return_correct_action(user_choice, computer_choice))
         prompt(calculate_winner_of_round(user_choice,
                                          computer_choice))
 
-        if computer_wins < 3 and user_wins < 3:
+        if (computer_wins < ((BEST_OUT_OF // 2) + 1) and 
+            user_wins < ((BEST_OUT_OF // 2) + 1)):
             prompt(f"Currently, the score is {user_name}: "
                    f"{user_wins}, Computer: {computer_wins}\n")
         else:
